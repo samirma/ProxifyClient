@@ -10,8 +10,6 @@
  */
 package com.proxify.util;
 
-import com.proxify.assistence.Server;
-import com.proxify.assistence.Server;
 import java.util.prefs.Preferences;
 
 /**
@@ -21,6 +19,8 @@ import java.util.prefs.Preferences;
 public class ConfigureProxy extends javax.swing.JFrame {
 
     static private ConfigureProxy inatancia;
+    
+    static private Server server;
 
     public static ConfigureProxy getConfigureProxy() {
         if (inatancia == null) {
@@ -59,7 +59,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
                 case Server.SOCKET:
                     inatancia.rbSocks.setSelected(true);
                     break;
-                case Server.DIRETO:
+                case Server.DIRECT:
                     inatancia.rbDireto.setSelected(true);
                     break;
                 default:
@@ -194,13 +194,13 @@ public class ConfigureProxy extends javax.swing.JFrame {
 
 
         if (rbDireto.isSelected()) {
-            Server.configurarProxy(Server.DIRETO, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.configurarProxy(Server.DIRECT, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbPadrao.isSelected()) {
-            Server.configurarProxy(null, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.configurarProxy(null, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbHttp.isSelected()) {
-            Server.configurarProxy(Server.HTTP, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.configurarProxy(Server.HTTP, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbSocks.isSelected()) {
-            Server.configurarProxy(Server.SOCKET, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.configurarProxy(Server.SOCKET, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         }
 
         this.setVisible(false);
@@ -209,7 +209,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
 
     private void rbPadraoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rbPadraoStateChanged
 
-        Server.configurarProxyPadrao();
+        server.configurarProxyPadrao();
 
     }//GEN-LAST:event_rbPadraoStateChanged
 
@@ -230,7 +230,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
         String usuarioProxy = txtUsuario.getText();
         String senhaProxy = new String(txtPasswd.getPassword());
 
-//        Servidor.configurarProxyHttp(hostProxy, portaProxy, usuarioProxy, senhaProxy);
+//        Servidor.setupProxyHttp(hostProxy, portaProxy, usuarioProxy, senhaProxy);
     }//GEN-LAST:event_rbHttpStateChanged
 
     private void rbHttpsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rbHttpsStateChanged
@@ -248,7 +248,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
         String usuarioProxy = txtUsuario.getText();
         String senhaProxy = new String(txtPasswd.getPassword());
 
-//        Servidor.configurarDireto(hostProxy, portaProxy, usuarioProxy, senhaProxy);
+//        Servidor.setupDirectConnection(hostProxy, portaProxy, usuarioProxy, senhaProxy);
     }//GEN-LAST:event_rbDiretoStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btSalvar;

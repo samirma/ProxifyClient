@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.Socket;
 
 /**
  * manage all events of remote connection with the server
@@ -23,10 +24,12 @@ public class SessionControler
     static private String idPc = "";
     public static boolean connect = true;
     public static ClientConnector clientConnector;
-    private static SessionControler estancia = null;
+    private static SessionControler sessionControler = null;
     private Integer serverPort;
     public Integer localPort;
     private String ipServer;
+    
+    private Server server;
 
     /**
      * @return the idPc
@@ -54,16 +57,16 @@ public class SessionControler
     public static void startConenctionServer(Integer serverPort, String ipServer,
             Integer _directPort, ClientConnector _clientConnector) {
 
-        estancia = new SessionControler();
+        sessionControler = new SessionControler();
 
         clientConnector = _clientConnector;
 
-        estancia.localPort = _directPort;
+        sessionControler.localPort = _directPort;
 
-        estancia.this.serverPort = serverPort;
-        estancia.this.ipServer = ipServer;
+        sessionControler.serverPort = serverPort;
+        sessionControler.ipServer = ipServer;
 
-        Thread thread = new Thread(estancia);
+        Thread thread = new Thread(sessionControler);
 
         thread.setName("SessionControler");
 
@@ -91,12 +94,12 @@ public class SessionControler
                     }
                     clientConnector.beforeConnectServer();
 
-                    Server.socket = Server.obterSocket(ipServer, serverPort);
+                    Socket socket = server.obterSocket(ipServer, serverPort);
 
-                    clientConnector.afterConnectServer(Server.socket);
+                    clientConnector.afterConnectServer(socket);
 
-                    InputStream is = Server.socket.getInputStream();
-                    OutputStream os = Server.socket.getOutputStream();
+                    InputStream is = socket.getInputStream();
+                    OutputStream os = socket.getOutputStream();
 
                     clientConnector.setInputStream(is);
                     clientConnector.setOutputStream(os);
@@ -113,7 +116,7 @@ public class SessionControler
 
                     line = in.readLine();
                     if ("gogogo".equals(line)) {
-                        clientConnector.startLink(Server.socket);
+                        clientConnector.startLink(socket);
                     }
 
                 } catch (Exception e) {

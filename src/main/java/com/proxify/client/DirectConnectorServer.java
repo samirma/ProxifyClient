@@ -77,11 +77,9 @@ public class DirectConnectorServer implements Runnable {
                     SessionControler.clientConnector.setInputStream(is);
                     SessionControler.clientConnector.setOutputStream(os);
 
-                    Server.socket = inputSocket;
-
                     System.out.print(inputSocket.isConnected());
 
-                    SessionControler.clientConnector.startLink(Server.socket);
+                    SessionControler.clientConnector.startLink(inputSocket);
 
 
                 }
