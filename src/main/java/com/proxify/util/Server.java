@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.proxify.util;
 
 import com.proxify.assistence.Assistence;
 import com.proxify.assistence.exception.AssistanceExcepition;
 import com.proxify.assistence.exception.ClientNotFoundException;
 import com.proxify.assistence.exception.ErrException;
-import com.proxify.util.ProxyHTTP;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +31,7 @@ public class Server {
     private String typeProxy = "";
     private String typePortProxy = "";
     private String hostProxy;
-    private String portaProxy;
+    private String portProxy;
     private String proxyUser;
     private String proxyPassword;
     private Boolean useProxy;
@@ -57,43 +52,43 @@ public class Server {
         System.getProperties().remove(typeProxy);
         System.getProperties().remove(typePortProxy);
 
-        setupProxy();
+        Server.this.setupProxy();
 
     }
 
-    public void configurarProxy(String _hostProxy, String _portaProxy,
+    public void setupProxy(String _hostProxy, String _portaProxy,
             String _usuarioProxy, String _senhaProxy) {
 
         useProxy = true;
         hostProxy = _hostProxy;
-        portaProxy = _portaProxy;
+        portProxy = _portaProxy;
         proxyUser = _usuarioProxy;
         proxyPassword = _senhaProxy;
 
     }
 
-    public void configurarProxy(Integer tipo, String _hostProxy,
+    public void setupProxy(Integer type, String _hostProxy,
             String _portaProxy, String _usuarioProxy, String _senhaProxy) {
 
         hostProxy = _hostProxy;
-        portaProxy = _portaProxy;
+        portProxy = _portaProxy;
         proxyUser = _usuarioProxy;
         proxyPassword = _senhaProxy;
 
-        if (tipo == null) {
+        if (type == null) {
             automaticSystem = true;
         } else {
             automaticSystem = false;
-            typeProxyInt = tipo;
+            typeProxyInt = type;
         }
 
         Preferences preferenciasCliente = Preferences.userRoot();
 
         preferenciasCliente.putByteArray("hostProxy", hostProxy.getBytes());
-        preferenciasCliente.putByteArray("portaProxy", portaProxy.getBytes());
+        preferenciasCliente.putByteArray("portaProxy", portProxy.getBytes());
         preferenciasCliente.putByteArray("usuarioProxy", proxyUser.getBytes());
         preferenciasCliente.putByteArray("senhaProxy", proxyPassword.getBytes());
-        preferenciasCliente.putLong("tipo", tipo);
+        preferenciasCliente.putLong("tipo", type);
 
     }
 
@@ -107,11 +102,11 @@ public class Server {
         typeProxy = "https.proxyHost";
         typePortProxy = "https.proxyPort";
         hostProxy = _hostProxy;
-        portaProxy = _portaProxy;
+        portProxy = _portaProxy;
         proxyUser = _usuarioProxy;
         proxyPassword = _senhaProxy;
 
-        setupProxy();
+        Server.this.setupProxy();
 
     }
 
@@ -123,7 +118,7 @@ public class Server {
 
         useProxy = true;
 
-        setupProxy();
+        Server.this.setupProxy();
     }
 
     public void configurarProxyPadrao() {
@@ -132,10 +127,11 @@ public class Server {
         System.getProperties().remove(typePortProxy);
         useProxy = false;
 
-        setupProxy();
+        Server.this.setupProxy();
     }
 
-    public void configurarProxySocks(String _hostProxy, String _portaProxy, String _usuarioProxy, String _senhaProxy) {
+    public void configurarProxySocks(String _hostProxy, String _portaProxy,
+            String _proxyUser, String _proxyPassword) {
         automaticSystem = false;
         if (typePortProxy != null) {
             System.getProperties().remove(typeProxy);
@@ -145,11 +141,11 @@ public class Server {
         typeProxy = "socksProxyHost";
         typePortProxy = "socksProxyPort";
         hostProxy = _hostProxy;
-        portaProxy = _portaProxy;
-        proxyUser = _usuarioProxy;
-        proxyPassword = _senhaProxy;
+        portProxy = _portaProxy;
+        proxyUser = _proxyUser;
+        proxyPassword = _proxyPassword;
 
-        setupProxy();
+        Server.this.setupProxy();
 
     }
 
@@ -158,7 +154,7 @@ public class Server {
         if (useProxy) {
 
             System.setProperty(typeProxy, hostProxy);
-            System.setProperty(typePortProxy, portaProxy);
+            System.setProperty(typePortProxy, portProxy);
 
         } else {
             System.getProperties().remove("http.nonProxyHosts");
@@ -166,29 +162,29 @@ public class Server {
 
     }
 
-    public void conenct(String codigo, String portaAssistenteString,
-            String ipAssistenteString, String portaEsperaString)
+    public void conenct(String code, String serverPortString,
+            String serverIpString, String localPortString)
             throws AssistanceExcepition, IOException, Exception {
-        if ("".equals(codigo)) {
+        if ("".equals(code)) {
             return;
         }
 
-        String address = ipAssistenteString;
+        String address = serverIpString;
         int porta = 9980;
         int portaEsperaClient = 5555;
 
-        System.out.println(ipAssistenteString + " : " + portaAssistenteString);
+        System.out.println(serverIpString + " : " + serverPortString);
 
-        if (ipAssistenteString != null && !"".equals(ipAssistenteString)) {
-            address = ipAssistenteString;
+        if (serverIpString != null && !"".equals(serverIpString)) {
+            address = serverIpString;
         }
 
-        if (portaAssistenteString != null && !"".equals(portaAssistenteString)) {
-            porta = new Integer(portaAssistenteString).intValue();
+        if (serverPortString != null && !"".equals(serverPortString)) {
+            porta = new Integer(serverPortString).intValue();
         }
 
-        if (portaEsperaString != null && !"".equals(portaEsperaString)) {
-            portaEsperaClient = new Integer(portaEsperaString).intValue();
+        if (localPortString != null && !"".equals(localPortString)) {
+            portaEsperaClient = new Integer(localPortString).intValue();
         }
 
         System.out.println(address + " " + porta);
@@ -201,7 +197,7 @@ public class Server {
 
         PrintWriter out = new PrintWriter(os, true);
 
-        out.println(codigo);
+        out.println(code);
         out.flush();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
@@ -249,7 +245,7 @@ public class Server {
         }
     }
 
-    public Socket obterSocket(String address, int porta) throws Exception {
+    public Socket obterSocket(String address, int port) throws Exception {
         Socket retorno = null;
 
         Preferences preferenciasCliente = Preferences.userRoot();
@@ -261,13 +257,13 @@ public class Server {
         } else {
             automaticSystem = false;
             hostProxy = new String(preferenciasCliente.getByteArray("hostProxy", null));
-            portaProxy = new String(preferenciasCliente.getByteArray("portaProxy", null));
+            portProxy = new String(preferenciasCliente.getByteArray("portaProxy", null));
             proxyUser = new String(preferenciasCliente.getByteArray("usuarioProxy", null));
             proxyPassword = new String(preferenciasCliente.getByteArray("senhaProxy", null));
         }
 
         if (automaticSystem) {
-            String url = "http://" + address + ":" + porta + "/";
+            String url = "http://" + address + ":" + port + "/";
             List<java.net.Proxy> proxys = ProxySelector.getDefault().select(new URI(url));
 
             useProxy = false;
@@ -282,21 +278,21 @@ public class Server {
                     break;
                 } else {
                     hostProxy = addr.getHostName();
-                    portaProxy = Integer.toString(addr.getPort());
+                    portProxy = Integer.toString(addr.getPort());
                     useProxy = true;
                 }
             }
             if (useProxy) {
-                retorno = getSocketHttp(address, porta);
+                retorno = getSocketHttp(address, port);
             } else {
                 retorno = new Socket();
-                InetSocketAddress dest = new InetSocketAddress(address, porta);
+                InetSocketAddress dest = new InetSocketAddress(address, port);
                 retorno.connect(dest);
             }
         } else {
             switch (typeProxyInt) {
                 case HTTP:
-                    retorno = getSocketHttp(address, porta);
+                    retorno = getSocketHttp(address, port);
                     break;
                 case HTTPS:
                     System.out.println("2");
@@ -306,7 +302,7 @@ public class Server {
                     break;
                 case DIRECT:
                     retorno = new Socket();
-                    InetSocketAddress dest = new InetSocketAddress(address, porta);
+                    InetSocketAddress dest = new InetSocketAddress(address, port);
                     retorno.connect(dest);
                     break;
                 default:
@@ -322,17 +318,17 @@ public class Server {
         return retorno;
     }
 
-    public Socket getSocketHttp(String address, int porta) throws IOException {
-        Socket retorno = null;
+    public Socket getSocketHttp(String address, int port) throws IOException {
+        Socket result = null;
         ProxyHTTP proxyHTTP;
         if (proxyUser != null && proxyPassword != null) {
-            proxyHTTP = new ProxyHTTP(hostProxy, new Integer(portaProxy), proxyUser, proxyPassword);
+            proxyHTTP = new ProxyHTTP(hostProxy, new Integer(portProxy), proxyUser, proxyPassword);
         } else {
-            proxyHTTP = new ProxyHTTP(hostProxy, new Integer(portaProxy));
+            proxyHTTP = new ProxyHTTP(hostProxy, new Integer(portProxy));
         }
 
-        retorno = proxyHTTP.openSocket(address, porta);
+        result = proxyHTTP.openSocket(address, port);
 
-        return retorno;
+        return result;
     }
 }

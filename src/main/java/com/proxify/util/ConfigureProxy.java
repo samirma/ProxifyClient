@@ -194,13 +194,13 @@ public class ConfigureProxy extends javax.swing.JFrame {
 
 
         if (rbDireto.isSelected()) {
-            server.configurarProxy(Server.DIRECT, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.setupProxy(Server.DIRECT, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbPadrao.isSelected()) {
-            server.configurarProxy(null, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.setupProxy(null, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbHttp.isSelected()) {
-            server.configurarProxy(Server.HTTP, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.setupProxy(Server.HTTP, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbSocks.isSelected()) {
-            server.configurarProxy(Server.SOCKET, hostProxy, portaProxy, usuarioProxy, senhaProxy);
+            server.setupProxy(Server.SOCKET, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         }
 
         this.setVisible(false);
