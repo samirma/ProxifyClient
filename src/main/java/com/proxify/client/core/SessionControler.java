@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.proxify.client.core;
 
 import com.proxify.client.DirectConnectorServer;
@@ -14,7 +10,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * manage all events of remote connection with the server
+ * Manage all events of remote connection with the server
  * @author sam
  */
 public class SessionControler
@@ -23,7 +19,7 @@ public class SessionControler
     public static boolean active = false;
     static private String idPc = "";
     public static boolean connect = true;
-    public static ClientConnector clientConnector;
+    public static ClientDelegate clientConnector;
     private static SessionControler sessionControler = null;
     private Integer serverPort;
     public Integer localPort;
@@ -55,7 +51,7 @@ public class SessionControler
      * @throws NoSuchMethodException
      */
     public static void startConenctionServer(Integer serverPort, String ipServer,
-            Integer _directPort, ClientConnector _clientConnector) {
+            Integer _directPort, ClientDelegate _clientConnector) {
 
         sessionControler = new SessionControler();
 
@@ -94,7 +90,7 @@ public class SessionControler
                     }
                     clientConnector.beforeConnectServer();
 
-                    Socket socket = server.obterSocket(ipServer, serverPort);
+                    Socket socket = server.getServerSocket(ipServer, serverPort);
 
                     clientConnector.afterConnectServer(socket);
 
@@ -104,6 +100,7 @@ public class SessionControler
                     clientConnector.setInputStream(is);
                     clientConnector.setOutputStream(os);
 
+                    //Send id
                     os.write(("id:" + getIdPc() + "\n").getBytes());
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(is));

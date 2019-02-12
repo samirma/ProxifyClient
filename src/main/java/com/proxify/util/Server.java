@@ -1,15 +1,12 @@
 package com.proxify.util;
 
-import com.proxify.assistence.Assistence;
 import com.proxify.assistence.exception.AssistanceExcepition;
-import com.proxify.assistence.exception.ClientNotFoundException;
 import com.proxify.assistence.exception.ErrException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -42,8 +39,6 @@ public class Server {
     public static final int HTTPS = 1;
     public static final int SOCKET = 3;
     public static final int DIRECT = 4;
-
-    private Assistence assistence;
 
     public void setupDirectConnection(String hostProxy, String portaProxy,
             String usuarioProxy, String senhaProxy) {
@@ -162,71 +157,8 @@ public class Server {
 
     }
 
-    public void conenct(String code, String serverPortString,
-            String serverIpString, String localPortString)
-            throws AssistanceExcepition, IOException, Exception {
-        if ("".equals(code)) {
-            return;
-        }
 
-        String address = serverIpString;
-        int porta = 9980;
-        int portaEsperaClient = 5555;
-
-        System.out.println(serverIpString + " : " + serverPortString);
-
-        if (serverIpString != null && !"".equals(serverIpString)) {
-            address = serverIpString;
-        }
-
-        if (serverPortString != null && !"".equals(serverPortString)) {
-            porta = new Integer(serverPortString).intValue();
-        }
-
-        if (localPortString != null && !"".equals(localPortString)) {
-            portaEsperaClient = new Integer(localPortString).intValue();
-        }
-
-        System.out.println(address + " " + porta);
-
-        socket = obterSocket(address, porta);
-
-        is = socket.getInputStream();
-
-        os = socket.getOutputStream();
-
-        PrintWriter out = new PrintWriter(os, true);
-
-        out.println(code);
-        out.flush();
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(is));
-
-        String line = in.readLine();
-
-        if ("erro".equals(line)) {
-            throw new ClientNotFoundException();
-        } else if ("ok:false".equals(line)) {
-            
-            assistence.setConnectedProxy(socket);
-            
-        } else if (line.startsWith("ok:true")) {
-
-            socket.close();
-
-            String lineArray[] = line.split(":");
-
-            String cliente = lineArray[2];
-
-            System.out.println(cliente + " " + portaEsperaClient);
-
-            socket = new Socket(cliente, portaEsperaClient);
-
-        }
-
-    }
-
-    public void connectToClient(String clientAddress,
+    public Socket connectToClient(String clientAddress,
             int clientPort, String code) throws ErrException, IOException {
         BufferedReader in;
         String line;
@@ -238,14 +170,14 @@ public class Server {
         line = in.readLine();
         if ("autenticado!".equals(line)) {
 
-            assistence.setConnectedProxy(socket);
+            return socket;
 
         } else {
             throw new ErrException();
         }
     }
 
-    public Socket obterSocket(String address, int port) throws Exception {
+    public Socket getServerSocket(String address, int port) throws Exception {
         Socket retorno = null;
 
         Preferences preferenciasCliente = Preferences.userRoot();
@@ -318,7 +250,7 @@ public class Server {
         return retorno;
     }
 
-    public Socket getSocketHttp(String address, int port) throws IOException {
+    private Socket getSocketHttp(String address, int port) throws IOException {
         Socket result = null;
         ProxyHTTP proxyHTTP;
         if (proxyUser != null && proxyPassword != null) {

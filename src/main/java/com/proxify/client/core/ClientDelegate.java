@@ -1,18 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.proxify.client.core;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import com.proxify.core.ConnectorDelegate;
 
 /**
  * Interface to control the events
- * @author sam
  */
-public interface ClientConnector {
+public interface ClientDelegate extends ConnectorDelegate{
 
     public void beforeConnectServer();
 
@@ -30,12 +26,6 @@ public interface ClientConnector {
     public void getConnectCode(String line);
 
     public void closeConnection(Exception e);
-
-    /**
-     * Execute just before to connect to other machine
-     * @param socket
-     */
-    public void startLink(Socket socket);
 
     public void closeConnection();
 

@@ -1,4 +1,4 @@
-package com.proxify.client;
+package com.proxify.util;
 
 /**
  *

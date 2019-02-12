@@ -87,7 +87,6 @@ public class DirectConnectorServer implements Runnable {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-            } finally {
             }
         }
     }
