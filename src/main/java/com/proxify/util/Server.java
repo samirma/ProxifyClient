@@ -22,7 +22,6 @@ import java.util.prefs.Preferences;
 public class Server {
 
     public final String HOST = "maincontrol.com.br";
-    public final int portaApoio = 11234;
     public InputStream is;
     public OutputStream os;
     private String typeProxy = "";
@@ -47,7 +46,7 @@ public class Server {
         System.getProperties().remove(typeProxy);
         System.getProperties().remove(typePortProxy);
 
-        Server.this.setupProxy();
+        setupProxy();
 
     }
 
@@ -116,7 +115,7 @@ public class Server {
         Server.this.setupProxy();
     }
 
-    public void configurarProxyPadrao() {
+    public void setupProxyDefault() {
         automaticSystem = true;
         System.getProperties().remove(typeProxy);
         System.getProperties().remove(typePortProxy);
@@ -125,7 +124,7 @@ public class Server {
         Server.this.setupProxy();
     }
 
-    public void configurarProxySocks(String _hostProxy, String _portaProxy,
+    public void setupProxySocks(String _hostProxy, String _portaProxy,
             String _proxyUser, String _proxyPassword) {
         automaticSystem = false;
         if (typePortProxy != null) {
@@ -156,7 +155,6 @@ public class Server {
         }
 
     }
-
 
     public Socket connectToClient(String clientAddress,
             int clientPort, String code) throws ErrException, IOException {

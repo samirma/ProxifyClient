@@ -12,8 +12,6 @@ import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
@@ -24,7 +22,7 @@ public class DesktopSystem {
 
     private final static String ROOT = "main/control/system/remote";
     private final static String ID_PC = "idPc";
-    
+
     public static boolean registered = false;
 
     /**

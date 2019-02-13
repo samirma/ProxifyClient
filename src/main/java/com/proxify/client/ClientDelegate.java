@@ -1,4 +1,4 @@
-package com.proxify.client.core;
+package com.proxify.client;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,7 +8,7 @@ import com.proxify.core.ConnectorDelegate;
 /**
  * Interface to control the events
  */
-public interface ClientDelegate extends ConnectorDelegate{
+public interface ClientDelegate extends ConnectorDelegate {
 
     public void beforeConnectServer();
 
@@ -21,6 +21,7 @@ public interface ClientDelegate extends ConnectorDelegate{
 
     /**
      * Recive code from server
+     *
      * @param line
      */
     public void getConnectCode(String line);

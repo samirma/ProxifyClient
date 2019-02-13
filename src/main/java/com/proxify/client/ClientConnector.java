@@ -1,6 +1,6 @@
-package com.proxify.client.core;
+package com.proxify.client;
 
-import com.proxify.client.DirectConnectorServer;
+import com.proxify.client.core.DirectConnectorServer;
 import com.proxify.util.DesktopSystem;
 import com.proxify.util.Server;
 import java.io.BufferedReader;
@@ -10,59 +10,58 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * Manage all events of remote connection with the server
- * @author sam
+ *
+ * @author samirantonio
  */
-public class SessionControler
-        implements Runnable {
+public class ClientConnector implements Runnable {
 
-    public static boolean active = false;
-    static private String idPc = "";
-    public static boolean connect = true;
-    public static ClientDelegate clientConnector;
-    private static SessionControler sessionControler = null;
+    private final ClientDelegate clientDelegate;
+    private final Server server;
+
+    public ClientConnector(ClientDelegate assistantDelegate) {
+        this.clientDelegate = assistantDelegate;
+        server = new Server();
+    }
+    public boolean active = false;
+    private String idPc = "";
+    public boolean connect = true;
+    public ClientDelegate clientConnector;
     private Integer serverPort;
     public Integer localPort;
     private String ipServer;
-    
-    private Server server;
 
     /**
      * @return the idPc
      */
-    public static String getIdPc() {
+    public String getIdPc() {
         return idPc;
     }
 
     /**
      * @param aIdPc the idPc to set
      */
-    public static void setIdPc(String aIdPc) {
+    public void setIdPc(String aIdPc) {
         idPc = aIdPc;
-    }
-
-    private SessionControler() {
     }
 
     /**
      * Start a new connection to server
+     *
      * @param i
      * @param _displayName
      * @throws NoSuchMethodException
      */
-    public static void startConenctionServer(Integer serverPort, String ipServer,
+    public void conencClient(Integer serverPort, String ipServer,
             Integer _directPort, ClientDelegate _clientConnector) {
-
-        sessionControler = new SessionControler();
 
         clientConnector = _clientConnector;
 
-        sessionControler.localPort = _directPort;
+        this.localPort = _directPort;
 
-        sessionControler.serverPort = serverPort;
-        sessionControler.ipServer = ipServer;
+        this.serverPort = serverPort;
+        this.ipServer = ipServer;
 
-        Thread thread = new Thread(sessionControler);
+        Thread thread = new Thread(this);
 
         thread.setName("SessionControler");
 
@@ -77,13 +76,12 @@ public class SessionControler
         clientConnector.beforeLoopConnectServer();
         try {
 
-
             do {
                 try {
 
                     try { // Try to connect to the server earch 10 seconds
                         Thread.sleep(10000);
-                        if (SessionControler.active) {
+                        if (active) {
                             continue;
                         }
                     } catch (Exception exception2) {
@@ -106,9 +104,9 @@ public class SessionControler
                     BufferedReader in = new BufferedReader(new InputStreamReader(is));
 
                     String line = in.readLine();
-                    
+
                     System.out.println(line);
-                    
+
                     clientConnector.getConnectCode(line);
 
                     line = in.readLine();
@@ -118,8 +116,7 @@ public class SessionControler
 
                 } catch (Exception e) {
 
-
-                    SessionControler.active = false;
+                    active = false;
 
                     clientConnector.closeConnection(e);
 
@@ -139,20 +136,18 @@ public class SessionControler
             clientConnector.closeConnection();
         }
 
-
     }
 
     private void startDirectConnectThread() {
 
-        new Thread(new DirectConnectorServer(this)).start();
+        new Thread(new DirectConnectorServer(clientDelegate,
+                idPc, localPort)).start();
 
     }
 
     public void run() {
 
-        String name = DesktopSystem.getFixedId();
-
-        setIdPc(name);
+        idPc = DesktopSystem.getFixedId();
 
         startDirectConnectThread();
 

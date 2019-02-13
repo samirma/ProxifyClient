@@ -16,12 +16,12 @@ import java.net.Socket;
  * @author samirantonio
  */
 public class AssistenceConnector {
-    
-    private final AssistenceDelegate assistantDelegate;
+
+    private final AssistanceClientDelegate assistantDelegate;
     private final Server server;
     private Socket socket;
 
-    public AssistenceConnector(AssistenceDelegate assistantDelegate) {
+    public AssistenceConnector(AssistanceClientDelegate assistantDelegate) {
         this.assistantDelegate = assistantDelegate;
         server = new Server();
     }
@@ -29,7 +29,7 @@ public class AssistenceConnector {
     public void conenctAdmin(String code, String serverPortString,
             String serverIpString, String clientLocalPortString)
             throws AssistanceExcepition, IOException, Exception {
-        
+
         if ("".equals(code)) {
             return;
         }
@@ -72,9 +72,9 @@ public class AssistenceConnector {
         if ("erro".equals(line)) {
             throw new ClientNotFoundException();
         } else if ("ok:false".equals(line)) {
-            
+
             assistantDelegate.startLink(socket);
-            
+
         } else if (line.startsWith("ok:true")) {
 
             socket.close();
@@ -86,14 +86,13 @@ public class AssistenceConnector {
             System.out.println(clientAddress + " " + clientLocalPort);
 
             int clientPort = clientLocalPort;
-            
+
             socket = server.connectToClient(clientAddress, clientPort, code);
-            
+
             assistantDelegate.startLink(socket);
 
         }
 
     }
-    
-    
+
 }

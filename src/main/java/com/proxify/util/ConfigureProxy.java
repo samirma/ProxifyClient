@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-/*
+ /*
  * ConfigureProxy.java
  *
  * Created on 18/04/2010, 20:14:34
@@ -19,7 +19,7 @@ import java.util.prefs.Preferences;
 public class ConfigureProxy extends javax.swing.JFrame {
 
     static private ConfigureProxy inatancia;
-    
+
     static private Server server;
 
     public static ConfigureProxy getConfigureProxy() {
@@ -49,25 +49,23 @@ public class ConfigureProxy extends javax.swing.JFrame {
         inatancia.txtUsuario.setText(usuarioProxy);
         inatancia.txtPasswd.setText(senhaProxy);
 
-            switch (tipoProxyInt) {
-                case Server.HTTP:
-                    inatancia.rbHttp.setSelected(true);
-                    break;
-                case Server.HTTPS:
-                    inatancia.rbHttps.setSelected(true);
-                    break;
-                case Server.SOCKET:
-                    inatancia.rbSocks.setSelected(true);
-                    break;
-                case Server.DIRECT:
-                    inatancia.rbDireto.setSelected(true);
-                    break;
-                default:
-                    System.out.println("Valor diferente de 1, 2 e 3");
-                    break;
-            }
-
-
+        switch (tipoProxyInt) {
+            case Server.HTTP:
+                inatancia.rbHttp.setSelected(true);
+                break;
+            case Server.HTTPS:
+                inatancia.rbHttps.setSelected(true);
+                break;
+            case Server.SOCKET:
+                inatancia.rbSocks.setSelected(true);
+                break;
+            case Server.DIRECT:
+                inatancia.rbDireto.setSelected(true);
+                break;
+            default:
+                System.out.println("Valor diferente de 1, 2 e 3");
+                break;
+        }
 
     }
 
@@ -191,8 +189,6 @@ public class ConfigureProxy extends javax.swing.JFrame {
         String usuarioProxy = txtUsuario.getText();
         String senhaProxy = new String(txtPasswd.getPassword());
 
-
-
         if (rbDireto.isSelected()) {
             server.setupProxy(Server.DIRECT, hostProxy, portaProxy, usuarioProxy, senhaProxy);
         } else if (rbPadrao.isSelected()) {
@@ -209,7 +205,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
 
     private void rbPadraoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rbPadraoStateChanged
 
-        server.configurarProxyPadrao();
+        server.setupProxyDefault();
 
     }//GEN-LAST:event_rbPadraoStateChanged
 
@@ -220,8 +216,7 @@ public class ConfigureProxy extends javax.swing.JFrame {
         String usuarioProxy = txtUsuario.getText();
         String senhaProxy = new String(txtPasswd.getPassword());
 
-//        Servidor.configurarProxySocks(hostProxy, portaProxy, usuarioProxy, senhaProxy);
-
+//        Servidor.setupProxySocks(hostProxy, portaProxy, usuarioProxy, senhaProxy);
     }//GEN-LAST:event_rbSocksStateChanged
 
     private void rbHttpStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rbHttpStateChanged
