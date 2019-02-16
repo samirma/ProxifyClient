@@ -15,17 +15,15 @@ import java.net.Socket;
  */
 public class ClientConnector implements Runnable {
 
-    private final ClientDelegate clientDelegate;
     private final Server server;
 
-    public ClientConnector(ClientDelegate assistantDelegate) {
-        this.clientDelegate = assistantDelegate;
+    public ClientConnector() {
         server = new Server();
     }
-    public boolean active = false;
+    private boolean active = false;
     private String idPc = "";
-    public boolean connect = true;
-    public ClientDelegate clientConnector;
+    private boolean connect = true;
+    private ClientDelegate clientDelegate;
     private Integer serverPort;
     public Integer localPort;
     private String ipServer;
@@ -51,10 +49,11 @@ public class ClientConnector implements Runnable {
      * @param _displayName
      * @throws NoSuchMethodException
      */
-    public void conencClient(Integer serverPort, String ipServer,
-            Integer _directPort, ClientDelegate _clientConnector) {
+    public void connectClient(String ipServer, 
+            Integer serverPort, Integer _directPort, 
+            ClientDelegate _clientConnector) {
 
-        clientConnector = _clientConnector;
+        clientDelegate = _clientConnector;
 
         this.localPort = _directPort;
 
@@ -73,7 +72,7 @@ public class ClientConnector implements Runnable {
      * Start server handshake
      */
     private void connectToServer() {
-        clientConnector.beforeLoopConnectServer();
+        clientDelegate.beforeLoopConnectServer();
         try {
 
             do {
@@ -86,17 +85,17 @@ public class ClientConnector implements Runnable {
                         }
                     } catch (Exception exception2) {
                     }
-                    clientConnector.beforeConnectServer();
+                    clientDelegate.beforeConnectServer();
 
                     Socket socket = server.getServerSocket(ipServer, serverPort);
 
-                    clientConnector.afterConnectServer(socket);
+                    clientDelegate.afterConnectServer(socket);
 
                     InputStream is = socket.getInputStream();
                     OutputStream os = socket.getOutputStream();
 
-                    clientConnector.setInputStream(is);
-                    clientConnector.setOutputStream(os);
+                    clientDelegate.setInputStream(is);
+                    clientDelegate.setOutputStream(os);
 
                     //Send id
                     os.write(("id:" + getIdPc() + "\n").getBytes());
@@ -107,18 +106,18 @@ public class ClientConnector implements Runnable {
 
                     System.out.println(line);
 
-                    clientConnector.getConnectCode(line);
+                    clientDelegate.getConnectCode(line);
 
                     line = in.readLine();
                     if ("gogogo".equals(line)) {
-                        clientConnector.startLink(socket);
+                        clientDelegate.startLink(socket);
                     }
 
                 } catch (Exception e) {
 
                     active = false;
 
-                    clientConnector.closeConnection(e);
+                    clientDelegate.closeConnection(e);
 
                 }
 
@@ -133,7 +132,7 @@ public class ClientConnector implements Runnable {
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {
-            clientConnector.closeConnection();
+            clientDelegate.closeConnection();
         }
 
     }
