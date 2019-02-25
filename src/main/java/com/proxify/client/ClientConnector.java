@@ -77,14 +77,7 @@ public class ClientConnector implements Runnable {
 
             do {
                 try {
-
-                    try { // Try to connect to the server earch 10 seconds
-                        Thread.sleep(10000);
-                        if (active) {
-                            continue;
-                        }
-                    } catch (Exception exception2) {
-                    }
+                    
                     clientDelegate.beforeConnectServer();
 
                     Socket socket = server.getServerSocket(ipServer, serverPort);
@@ -119,6 +112,11 @@ public class ClientConnector implements Runnable {
 
                     clientDelegate.closeConnection(e);
 
+                }
+                
+                try { // Try to connect to the server earch 10 seconds
+                    Thread.sleep(10000);
+                } catch (Exception exception2) {
                 }
 
             } while (connect);
